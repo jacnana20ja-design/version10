@@ -45,8 +45,18 @@ public class ProjectController {
     @PostMapping
     public ResponseEntity<ApiResponse<ProjectDTO>> createProject(@RequestBody ProjectDTO projectDTO) {
         try {
+            if (projectDTO.getTitle() == null || projectDTO.getTitle().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Le titre du projet est requis"));
+            }
+            if (projectDTO.getDescription() == null || projectDTO.getDescription().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("La description du projet est requise"));
+            }
+            if (projectDTO.getEndDate() == null) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("La date d'\u00e9ch\u00e9ance est requise"));
+            }
+
             ProjectDTO createdProject = projectService.createProject(projectDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("PROJECT_CREATED", createdProject));
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Projet cr\u00e9\u00e9 avec succ\u00e8s", createdProject));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }

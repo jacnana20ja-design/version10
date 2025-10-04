@@ -125,7 +125,11 @@ export default function Encadreurs() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center text-sm text-gray-900 dark:text-white">
                         <Users className="h-4 w-4 mr-2 text-gray-400" />
-                        {getStagiairesCount(encadreur.id)} stagiaire{getStagiairesCount(encadreur.id) > 1 ? 's' : ''}
+                        {getStagiairesCount(encadreur.id) === 0 ? (
+                          <span className="text-gray-400 dark:text-gray-500 italic">Aucun stagiaire</span>
+                        ) : (
+                          <span>{getStagiairesCount(encadreur.id)} stagiaire{getStagiairesCount(encadreur.id) > 1 ? 's' : ''}</span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

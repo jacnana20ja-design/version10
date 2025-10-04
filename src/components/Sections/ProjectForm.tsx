@@ -15,11 +15,14 @@ export default function ProjectForm({ onClose, onSubmit }: ProjectFormProps) {
     priority: 'medium',
     assignedInterns: [] as string[]
   });
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+
     if (!formData.title || !formData.description || !formData.dueDate) {
-      alert('Veuillez remplir tous les champs obligatoires');
+      setError('Veuillez remplir tous les champs obligatoires');
       return;
     }
     onSubmit(formData);
@@ -131,6 +134,12 @@ export default function ProjectForm({ onClose, onSubmit }: ProjectFormProps) {
               ))}
             </div>
           </div>
+
+          {error && (
+            <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
 
           <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button

@@ -50,10 +50,20 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<ApiResponse<TaskDTO>> createTask(@RequestBody TaskDTO taskDTO) {
         try {
+            if (taskDTO.getTitle() == null || taskDTO.getTitle().trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Le titre de la tâche est requis"));
+            }
+            if (taskDTO.getAssignedToId() == null) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Veuillez assigner la tâche à un stagiaire"));
+            }
+            if (taskDTO.getProjectId() == null) {
+                return ResponseEntity.badRequest().body(ApiResponse.error("Veuillez sélectionner un projet"));
+            }
+
             TaskDTO createdTask = taskService.createTask(taskDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("TASK_CREATED", createdTask));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ApiResponse.error("TASK_CREATION_FAILED"));
+            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Tâche créée avec succès", createdTask));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         }
     }
 

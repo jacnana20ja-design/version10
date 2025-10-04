@@ -13,10 +13,12 @@ import Kanban from './components/Sections/Kanban';
 import Reports from './components/Sections/Reports';
 import Settings from './components/Sections/Settings';
 import Login from './pages/Login';
+import Register from './pages/Register';
 
 function AppContent() {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   const { user, loading } = useAuth();
 
   React.useEffect(() => {
@@ -24,7 +26,15 @@ function AppContent() {
       setActiveSection(event.detail);
     };
 
+    const checkRegisterRoute = () => {
+      if (window.location.pathname === '/register') {
+        setShowRegister(true);
+      }
+    };
+
     window.addEventListener('navigate', handleNavigate);
+    checkRegisterRoute();
+
     return () => window.removeEventListener('navigate', handleNavigate);
   }, []);
 
@@ -40,6 +50,9 @@ function AppContent() {
   }
 
   if (!user) {
+    if (showRegister) {
+      return <Register />;
+    }
     return <Login />;
   }
 

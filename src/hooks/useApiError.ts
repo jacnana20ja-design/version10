@@ -5,9 +5,28 @@ interface ApiError {
   status?: number;
 }
 
+interface ApiErrorResponse {
+  success: boolean;
+  message?: string;
+  error?: string;
+}
+
 export const useApiError = () => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const extractErrorMessage = (err: any): string => {
+    if (err?.response?.data) {
+      const apiError = err.response.data as ApiErrorResponse;
+      return apiError.error || apiError.message || 'Une erreur est survenue';
+    }
+
+    if (err?.message) {
+      return err.message;
+    }
+
+    return 'Impossible de se connecter au serveur';
+  };
 
   const handleApiCall = useCallback(async <T>(
     apiCall: () => Promise<T>,
@@ -25,9 +44,10 @@ export const useApiError = () => {
       }
       return result;
     } catch (err: any) {
+      const errorMessage = extractErrorMessage(err);
       const apiError: ApiError = {
-        message: err.message || 'Une erreur est survenue',
-        status: err.status
+        message: errorMessage,
+        status: err?.response?.status || err.status
       };
 
       setError(apiError.message);

@@ -21,14 +21,27 @@ export default function TaskFormModal({ isOpen, onClose, onSubmit, projectId }: 
   });
 
   const [newLabel, setNewLabel] = useState('');
+  const [error, setError] = useState('');
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title || !formData.assignedTo || !formData.projectId) {
+    setError('');
+
+    if (!formData.title) {
+      setError('Le titre de la tâche est requis');
       return;
     }
+    if (!formData.assignedTo) {
+      setError('Veuillez assigner la tâche à un stagiaire');
+      return;
+    }
+    if (!formData.projectId) {
+      setError('Veuillez sélectionner un projet');
+      return;
+    }
+
     onSubmit(formData);
     setFormData({
       title: '',
@@ -203,6 +216,12 @@ export default function TaskFormModal({ isOpen, onClose, onSubmit, projectId }: 
               ))}
             </div>
           </div>
+
+          {error && (
+            <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+            </div>
+          )}
 
           <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
